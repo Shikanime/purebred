@@ -1,7 +1,5 @@
 pragma solidity ^0.4.15;
 
-import "./lib/Strings.sol";
-
 contract FamilyTree {
     address owner;
 
@@ -109,51 +107,7 @@ contract FamilyTree {
 
     // Childs table parser
 
-    function uintToString(int128 v) private pure returns (string str) {
-        uint maxlength = 100;
-        bytes memory reversed = new bytes(maxlength);
-        uint i = 0;
-        while (v != 0) {
-            int128 remainder = v % 10;
-            v = v / 10;
-            reversed[i++] = byte(48 + remainder);
-        }
-        bytes memory s = new bytes(i + 1);
-        for (uint j = 0; j <= i; j++) {
-            s[j] = reversed[i - j];
-        }
-        str = string(s);
-    }
-
-    function arrayToCsvString(int128[] array) public view returns (string arrayString) {
-        uint128 x = 0;
-        string memory stringCsv = "";
-        Strings.Slice memory commaSlice = Strings.toSlice(",");
-
-        while (x < array.length) {
-            Strings.Slice memory stringCsvSlice = Strings.toSlice(stringCsv);
-            if (!Strings.empty(stringCsvSlice)) {
-                Strings.Slice memory stringCsvPart = Strings.toSlice(Strings.concat(stringCsvSlice, commaSlice));
-                stringCsv = Strings.concat(stringCsvPart, Strings.toSlice(uintToString(array[x])));
-            } else {
-                stringCsv = uintToString(array[x]);
-            }
-            x++;
-        }
-        return (
-          stringCsv
-        );
-    }
-
     // Childs informations and methods
-
-    function getChildren(int128 id) public view returns (string children) {
-        FamilyNode memory fn = familyNodes[id];
-        string memory childrenCsv = arrayToCsvString(fn.childrenIds);
-        return (
-          childrenCsv
-        );
-    }
 
     function hasThisChild(int128 parentId, int128 childId) private view returns (bool) {
         FamilyNode memory familyNode = familyNodes[parentId];
